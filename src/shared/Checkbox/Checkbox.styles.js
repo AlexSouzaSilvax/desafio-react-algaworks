@@ -16,7 +16,7 @@ export const Indicator = styled.div`
 
   //pega props (value) do component
   ${(props) => (props.value ? "background-color: #004d61;" : "")}
-
+  
   border: 2px solid #004d61;
   margin-right: 8px;
   cursor: pointer;
