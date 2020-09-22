@@ -4,7 +4,14 @@ import { Wrapper, Title, Array } from "./ShoppingList.styles";
 
 function ShoppingList({ title, products, onToggle }) {
   const lista = products.map((product) => {
-    return <Checkbox value={product.checked} title={product.name} onClick={() => onToggle(product.id, product.checked)} />;
+    return (
+      <Checkbox
+        key={product.id}
+        value={product.checked}
+        title={product.name}
+        onClick={() => (onToggle ? onToggle(product.id, product.checked) : {})}
+      />
+    );
   });
 
   return (

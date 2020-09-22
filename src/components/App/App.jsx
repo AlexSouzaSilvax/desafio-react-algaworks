@@ -5,18 +5,26 @@ import AppHeader from "../AppHeader";
 import ShoppingList from "../ShoppingList/ShoppingList";
 import { Container, Wrapper } from "./App.styles";
 import productsMock from "../../mocks/products.json";
+import extractPercentage from "../../utils/extractPercentage";
 
 function App() {
   const colors = ["#62CBC6", "#00ABAD", "#00858C", "#005073", "#004D61"];
 
-  const [healty, setHealty] = useState(20);
   const [products, setProducts] = useState(productsMock.products);
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
     const newSelectedProducts = products.filter((product) => product.checked);
     setSelectedProducts(newSelectedProducts);
   }, [products]);
+
+  useEffect(() => {
+    const total = selectedProducts
+      .map((product) => product.price)
+      .reduce((a, b) => a + b, 0);
+    setTotalPrice(total);
+  }, [selectedProducts]);
 
   function handleToggle(id, checked) {
     const newProducts = products.map((product) =>
@@ -43,31 +51,67 @@ function App() {
             />
           }
           middle={
-            <ShoppingList title="Sua Lista de compras" products={selectedProducts} />
+            <ShoppingList
+              title="Sua Lista de compras"
+              products={selectedProducts}
+            />
           }
           right={
             <div>
               estatísticas
               <LineChart
                 title={"Saudavel"}
-                percentage={healty}
+                percentage={extractPercentage(
+                  selectedProducts.length,
+                  selectedProducts.filter((product) =>
+                    product.tags.includes("healthy")
+                  ).length
+                )}
                 color={colors[0]}
               />
               <LineChart
                 title={"Não tão saudavel"}
-                percentage={healty}
+                percentage={extractPercentage(
+                  selectedProducts.length,
+                  selectedProducts.filter((product) =>
+                    product.tags.includes("junk")
+                  ).length
+                )}
                 color={colors[1]}
               />
               <LineChart
                 title={"Limpeza"}
-                percentage={healty}
+                percentage={extractPercentage(
+                  selectedProducts.length,
+                  selectedProducts.filter((product) =>
+                    product.tags.includes("cleaning")
+                  ).length
+                )}
                 color={colors[2]}
               />
               <LineChart
                 title={"Outros"}
-                percentage={healty}
+                percentage={extractPercentage(
+                  selectedProducts.length,
+                  selectedProducts.filter((product) =>
+                    product.tags.includes("other")
+                  ).length
+                )}
                 color={colors[3]}
               />
+              <div style={{ marginTop: 12 }}>
+                <h2
+                  style={{ fontWeight: 400, fontSize: 12, color: "#00364A" }}
+                ></h2>
+                previsão de gastos:
+                <div style={{ fontSize: 24 }}>
+                  {totalPrice.toLocaleString("pt-br", {
+                    currency: "BRL",
+                    minimumFractionDigits: 2,
+                    style: "currency",
+                  })}
+                </div>
+              </div>
             </div>
           }
         />
