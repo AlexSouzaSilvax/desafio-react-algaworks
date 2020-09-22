@@ -1,17 +1,34 @@
-import React, { useState } from "react";
-import Checkbox from "../../shared/Checkbox";
+import React, { useEffect, useState } from "react";
 import LineChart from "../../shared/LineChart";
 import AppContainer from "../AppContainer";
 import AppHeader from "../AppHeader";
+import ShoppingList from "../ShoppingList/ShoppingList";
 import { Container, Wrapper } from "./App.styles";
+import productsMock from "../../mocks/products.json";
 
 function App() {
-  const [visibleCheck1, setVisibleCheck1] = useState(false);
-  const [visibleCheck2, setVisibleCheck2] = useState(false);
+  const colors = ["#62CBC6", "#00ABAD", "#00858C", "#005073", "#004D61"];
 
   const [healty, setHealty] = useState(20);
+  const [products, setProducts] = useState(productsMock.products);
+  const [selectedProducts, setSelectedProducts] = useState([]);
 
-  const colors = ["#62CBC6", "#00ABAD", "#00858C", "#005073", "#004D61"];
+  useEffect(() => {
+    const newSelectedProducts = products.filter((product) => product.checked);
+    setSelectedProducts(newSelectedProducts);
+  }, [products]);
+
+  function handleToggle(id, checked) {
+    const newProducts = products.map((product) =>
+      product.id === id
+        ? {
+            ...product,
+            checked: !product.checked,
+          }
+        : product
+    );
+    setProducts(newProducts);
+  }
 
   return (
     <Wrapper>
@@ -19,30 +36,14 @@ function App() {
         <AppHeader />
         <AppContainer
           left={
-            <div>
-              produtos disponíveis
-              <Checkbox
-                title={"Alface"}
-                value={visibleCheck1}
-                onClick={() => {
-                  setVisibleCheck1(!visibleCheck1);
-                  setHealty(healty + 10);
-                }}
-              />
-            </div>
+            <ShoppingList
+              title="Produtos disponíveis"
+              products={products}
+              onToggle={handleToggle}
+            />
           }
           middle={
-            <div>
-              sua lista de compras
-              <Checkbox
-                title={"Arroz"}
-                value={visibleCheck2}
-                onClick={() => {
-                  setVisibleCheck2(!visibleCheck2);
-                  setHealty(healty - 10);
-                }}
-              />
-            </div>
+            <ShoppingList title="Sua Lista de compras" products={selectedProducts} />
           }
           right={
             <div>
