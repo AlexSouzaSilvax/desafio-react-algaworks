@@ -26,7 +26,7 @@ function App() {
     setTotalPrice(total);
   }, [selectedProducts]);
 
-  function handleToggle(id, checked) {
+  function handleToggle(id) {
     const newProducts = products.map((product) =>
       product.id === id
         ? {
@@ -94,7 +94,7 @@ function App() {
                 percentage={extractPercentage(
                   selectedProducts.length,
                   selectedProducts.filter((product) =>
-                    product.tags.includes("other")
+                    product.tags.includes("others")
                   ).length
                 )}
                 color={colors[3]}
