@@ -1,42 +1,35 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import { Container, Wrapper } from "./App.styles";
+
 import LineChart from "../../shared/LineChart";
+
 import AppContainer from "../AppContainer";
 import AppHeader from "../AppHeader";
 import ShoppingList from "../ShoppingList/ShoppingList";
-import { Container, Wrapper } from "./App.styles";
-import productsMock from "../../mocks/products.json";
-import extractPercentage from "../../utils/extractPercentage";
 import Calculator from "../Calculator";
 
+import {
+  selectAllProducts,
+  selectSelectedProducts,
+  selectSelectedProductTotalPrice,
+} from "../../store/Products/Products.selectors";
+
+import { toggleProduct } from "../../store/Products/Products.actions";
+
+import extractPercentage from "../../utils/extractPercentage";
+
 function App() {
+  const dispatch = useDispatch();
   const colors = ["#62CBC6", "#00ABAD", "#00858C", "#005073", "#004D61"];
 
-  const [products, setProducts] = useState(productsMock.products);
-  const [selectedProducts, setSelectedProducts] = useState([]);
-  const [totalPrice, setTotalPrice] = useState(0);
-
-  useEffect(() => {
-    const newSelectedProducts = products.filter((product) => product.checked);
-    setSelectedProducts(newSelectedProducts);
-  }, [products]);
-
-  useEffect(() => {
-    const total = selectedProducts
-      .map((product) => product.price)
-      .reduce((a, b) => a + b, 0);
-    setTotalPrice(total);
-  }, [selectedProducts]);
+  const products = useSelector(selectAllProducts);
+  const selectedProducts = useSelector(selectSelectedProducts);
+  const totalPrice = useSelector(selectSelectedProductTotalPrice);
 
   function handleToggle(id) {
-    const newProducts = products.map((product) =>
-      product.id === id
-        ? {
-            ...product,
-            checked: !product.checked,
-          }
-        : product
-    );
-    setProducts(newProducts);
+    dispatch(toggleProduct(id));
   }
 
   return (
@@ -101,10 +94,9 @@ function App() {
                 color={colors[3]}
               />
               <div style={{ marginTop: 12 }}>
-                <h2
-                  style={{ fontWeight: 400, fontSize: 12, color: "#00364A" }}
-                ></h2>
-                previsão de gastos:
+                <h2 style={{ fontWeight: 400, fontSize: 12, color: "#00364A" }}>
+                  previsão de gastos:
+                </h2>
                 <div style={{ fontSize: 24 }}>
                   {totalPrice.toLocaleString("pt-br", {
                     currency: "BRL",
