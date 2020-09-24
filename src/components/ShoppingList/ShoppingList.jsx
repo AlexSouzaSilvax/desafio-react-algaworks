@@ -1,23 +1,32 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import Checkbox from "../../shared/Checkbox";
+import {
+  selectAllProducts,
+  selectSelectedProducts,
+} from "../../store/Products/Products.selectors";
 import { Wrapper, Title, Array } from "./ShoppingList.styles";
 
-function ShoppingList({ title, products, onToggle }) {
-  const lista = products.map((product) => {
-    return (
-      <Checkbox
-        key={product.id}
-        value={product.checked}
-        title={product.name}
-        onClick={() => (onToggle ? onToggle(product.id, product.checked) : {})}
-      />
-    );
-  });
+function ShoppingList({ title, onToggle, displayOnlySelected }) {
+  const products = useSelector(
+    displayOnlySelected ? selectSelectedProducts : selectAllProducts
+  );
 
   return (
     <Wrapper>
       <Title>{title}:</Title>
-      <Array>{lista}</Array>
+      <Array>
+        {products.map((product) => {
+          return (
+            <Checkbox
+              key={product.id}
+              value={product.checked}
+              title={product.name}
+              onClick={() => onToggle(product.id, product.checked)}
+            />
+          );
+        })}
+      </Array>
     </Wrapper>
   );
 }

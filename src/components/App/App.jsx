@@ -11,7 +11,6 @@ import ShoppingList from "../ShoppingList/ShoppingList";
 import Calculator from "../Calculator";
 
 import {
-  selectAllProducts,
   selectSelectedProducts,
   selectSelectedProductTotalPrice,
 } from "../../store/Products/Products.selectors";
@@ -24,7 +23,6 @@ function App() {
   const dispatch = useDispatch();
   const colors = ["#62CBC6", "#00ABAD", "#00858C", "#005073", "#004D61"];
 
-  const products = useSelector(selectAllProducts);
   const selectedProducts = useSelector(selectSelectedProducts);
   const totalPrice = useSelector(selectSelectedProductTotalPrice);
 
@@ -40,14 +38,14 @@ function App() {
           left={
             <ShoppingList
               title="Produtos disponíveis"
-              products={products}
               onToggle={handleToggle}
             />
           }
           middle={
             <ShoppingList
               title="Sua Lista de compras"
-              products={selectedProducts}
+              onToggle={handleToggle}
+              displayOnlySelected              
             />
           }
           right={
